@@ -8,12 +8,17 @@ import ec.edu.uees.opciones.ScreenManager;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -28,8 +33,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class FinalController implements Initializable{
+    private static final String WIKIPEDIA_USER_AGENT = "AkinatorProyecto/1.0 (proyecto academico UEES)";
+    private static final int WIKIPEDIA_TIMEOUT_MILLIS = 8000;
+
     private String searchText;
-    private String imageUrl;
     @FXML private ImageView imagenResultado, akinatorFinalDefault, akinatorFinal1, akinatorFinal2, imagenAlerta;
     @FXML private AnchorPane mainAnchor;
     @FXML private StackPane stackBurbuja;
@@ -58,11 +65,7 @@ public class FinalController implements Initializable{
         searchText = PersonajeSingleton.getInstance().getPersonaje();
         if(labelResultado != null) {
             labelResultado.setText(searchText);
-            imageUrl = getWikipediaImage(searchText);
-            if (imageUrl != null) {
-                Image image = new Image(imageUrl, true);
-                imagenResultado.setImage(image);
-            }
+            loadWikipediaImage(searchText);
         }
         
         if(!ScreenManager.getInstance().isScreenLocked()) {
@@ -106,29 +109,141 @@ public class FinalController implements Initializable{
     }
     
     private String getWikipediaImage(String actorName) {
+        HttpURLConnection conn = null;
         try {
-            String searchUrl = "https://es.wikipedia.org/api/rest_v1/page/summary/" + actorName.replace(" ", "_");
-            URL url = new URL(searchUrl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            if(actorName == null || actorName.isBlank()) {
+                return null;
+            }
+
+            String pageName = actorName.trim().replaceAll("\\s+", "_");
+            String encodedPageName = URLEncoder.encode(pageName, StandardCharsets.UTF_8);
+            URL url = new URL("https://es.wikipedia.org/api/rest_v1/page/summary/" + encodedPageName);
+            conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
-            conn.setRequestProperty("User-Agent", "Mozilla/5.0");
-            Scanner scanner = new Scanner(conn.getInputStream());
-            StringBuilder response = new StringBuilder();
-            while (scanner.hasNext()) {
-                response.append(scanner.nextLine());
+            conn.setRequestProperty("User-Agent", WIKIPEDIA_USER_AGENT);
+            conn.setRequestProperty("Accept", "application/json");
+            conn.setConnectTimeout(WIKIPEDIA_TIMEOUT_MILLIS);
+            conn.setReadTimeout(WIKIPEDIA_TIMEOUT_MILLIS);
+            if(conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                return null;
             }
-            scanner.close();
-            String jsonResponse = response.toString();
-            System.out.println("Wikipedia JSON: " + jsonResponse); // Depuración
-            int startIndex = jsonResponse.indexOf("\"source\":\"") + 10;
-            int endIndex = jsonResponse.indexOf("\"", startIndex);
-            if (startIndex > 10 && endIndex > startIndex) {
-                return jsonResponse.substring(startIndex, endIndex).replace("\\", "");
+
+            String jsonResponse;
+            try(InputStream response = conn.getInputStream()) {
+                jsonResponse = new String(response.readAllBytes(), StandardCharsets.UTF_8);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            return extractThumbnailSource(jsonResponse);
+        } catch (IOException | RuntimeException e) {
+            return null;
+        } finally {
+            if(conn != null) {
+                conn.disconnect();
+            }
         }
-        return null;
+    }
+
+    private void loadWikipediaImage(String actorName) {
+        Thread imageLoader = new Thread(() -> {
+            String url = getWikipediaImage(actorName);
+            if(url == null) {
+                return;
+            }
+
+            Image image = downloadWikipediaImage(url);
+            if(image == null || image.isError()) {
+                return;
+            }
+
+            try {
+                Platform.runLater(() -> imagenResultado.setImage(image));
+            } catch(IllegalStateException ignored) {
+                // La aplicación puede haberse cerrado mientras terminaba la descarga.
+            }
+        }, "wikipedia-image-loader");
+        imageLoader.setDaemon(true);
+        imageLoader.start();
+    }
+
+    private Image downloadWikipediaImage(String imageUrl) {
+        HttpURLConnection conn = null;
+        try {
+            conn = (HttpURLConnection) new URL(imageUrl).openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("User-Agent", WIKIPEDIA_USER_AGENT);
+            conn.setRequestProperty("Accept", "image/*");
+            conn.setConnectTimeout(WIKIPEDIA_TIMEOUT_MILLIS);
+            conn.setReadTimeout(WIKIPEDIA_TIMEOUT_MILLIS);
+            if(conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                return null;
+            }
+
+            try(InputStream imageData = conn.getInputStream()) {
+                Image image = new Image(imageData);
+                return image.isError() ? null : image;
+            }
+        } catch (IOException | RuntimeException e) {
+            return null;
+        } finally {
+            if(conn != null) {
+                conn.disconnect();
+            }
+        }
+    }
+
+    private String extractThumbnailSource(String jsonResponse) {
+        int thumbnailIndex = jsonResponse.indexOf("\"thumbnail\"");
+        if(thumbnailIndex < 0) {
+            return null;
+        }
+        int objectStart = jsonResponse.indexOf('{', thumbnailIndex);
+        int objectEnd = objectStart < 0 ? -1 : jsonResponse.indexOf('}', objectStart);
+        if(objectStart < 0 || objectEnd < 0) {
+            return null;
+        }
+
+        String thumbnail = jsonResponse.substring(objectStart + 1, objectEnd);
+        Matcher source = Pattern.compile("\\\"source\\\"\\s*:\\s*\\\"((?:\\\\.|[^\\\"\\\\])*)\\\"")
+            .matcher(thumbnail);
+        if(!source.find()) {
+            return null;
+        }
+
+        return unescapeJsonString(source.group(1));
+    }
+
+    private String unescapeJsonString(String value) {
+        StringBuilder decoded = new StringBuilder(value.length());
+        for(int i = 0; i < value.length(); i++) {
+            char current = value.charAt(i);
+            if(current != '\\' || i + 1 >= value.length()) {
+                decoded.append(current);
+                continue;
+            }
+
+            char escaped = value.charAt(++i);
+            switch(escaped) {
+                case '"', '\\', '/' -> decoded.append(escaped);
+                case 'b' -> decoded.append('\b');
+                case 'f' -> decoded.append('\f');
+                case 'n' -> decoded.append('\n');
+                case 'r' -> decoded.append('\r');
+                case 't' -> decoded.append('\t');
+                case 'u' -> {
+                    if(i + 4 < value.length()) {
+                        try {
+                            decoded.append((char) Integer.parseInt(value.substring(i + 1, i + 5), 16));
+                            i += 4;
+                        } catch(NumberFormatException e) {
+                            decoded.append('u');
+                        }
+                    } else {
+                        decoded.append('u');
+                    }
+                }
+                default -> decoded.append(escaped);
+            }
+        }
+        return decoded.toString();
     }
     
     @FXML
