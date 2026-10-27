@@ -10,13 +10,9 @@ import java.util.ResourceBundle;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -43,12 +39,12 @@ public class OptionsController implements Initializable{
     @FXML private Slider sliderMusica, sliderSFX;
     @FXML private ToggleButton toggleAnimaciones, togglePantalla;
     private MediaPlayer mediaPlayer;
-    private Media media;
-    private String filePath = getClass().getResource("/imagenes/pergaminoVideo.mp4").toExternalForm();
-    private double videoOffset = 0;
+    private Timeline optionsTimeline;
 
     @FXML
     private void switchToMenu() throws IOException {
+        disposeMediaPlayer();
+        stopOptionsTimeline();
         App.setRootSinAnimar("menu");
     }
     
@@ -70,48 +66,9 @@ public class OptionsController implements Initializable{
         }
                
         if(AnimationManager.getInstance().areAnimationsEnabled()) {
-            Timeline timeline = new Timeline(
-                new KeyFrame(Duration.seconds(0.7 - videoOffset), e -> animarNodo(labelOptions)),
-                new KeyFrame(Duration.seconds(0.85 - videoOffset), e -> animarNodo(hboxMusica)),
-                new KeyFrame(Duration.seconds(0.9 - videoOffset), e -> animarNodo(hboxSFX)),
-                new KeyFrame(Duration.seconds(1.05 - videoOffset), e -> animarNodo(hboxBrillo)),
-                new KeyFrame(Duration.seconds(1.2 - videoOffset), e -> animarNodo(hboxAnimaciones)),    
-                new KeyFrame(Duration.seconds(1.35 - videoOffset), e -> animarNodo(hboxBotones))
-            );
-            videoOffset = 0.2;
-
-            Platform.runLater(() -> {
-                try {
-                    if(mediaPlayer != null) {
-                        mediaPlayer.dispose();
-                        System.gc();
-                    }
-                    if(imagenFondo.isVisible()){
-                        imagenFondo.setVisible(false);
-                    }
-                    media = new Media(filePath);
-                    mediaPlayer = new MediaPlayer(media);
-                    fondoPergamino.setMediaPlayer(mediaPlayer);
-                    mediaPlayer.setOnReady(() -> {
-                        mediaPlayer.play();
-                    });
-                    mediaPlayer.setOnError(() -> {
-                        System.out.println(mediaPlayer.getError());
-                        restart();
-                    });
-                    timeline.play();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            });    
+            startAnimatedBackground(true);
         } else {
-            hboxMusica.setVisible(true);
-            hboxSFX.setVisible(true);
-            hboxBrillo.setVisible(true);
-            hboxAnimaciones.setVisible(true);
-            labelOptions.setVisible(true);
-            hboxBotones.setVisible(true);
-            imagenFondo.setVisible(true);
+            showStaticBackground();
         }
         
         // OPCIÓN MUSICA
@@ -157,6 +114,11 @@ public class OptionsController implements Initializable{
         toggleAnimaciones.setSelected(AnimationManager.getInstance().areAnimationsEnabled());
         toggleAnimaciones.selectedProperty().addListener((observable, oldValue, newValue) -> {
             AnimationManager.getInstance().setAnimationsEnabled(newValue);
+            if(newValue) {
+                startAnimatedBackground(false);
+            } else {
+                showStaticBackground();
+            }
         });
         
     }
@@ -169,9 +131,135 @@ public class OptionsController implements Initializable{
         fadeIn.setToValue(1);
         fadeIn.play();
     }
+
+    private void startAnimatedBackground(boolean animateControls) {
+        stopOptionsTimeline();
+        disposeMediaPlayer();
+        imagenFondo.setVisible(true);
+        fondoPergamino.setVisible(false);
+
+        if(animateControls) {
+            hideOptionsControls();
+            optionsTimeline = new Timeline(
+                new KeyFrame(Duration.seconds(0.5), e -> animarNodo(labelOptions)),
+                new KeyFrame(Duration.seconds(0.65), e -> animarNodo(hboxMusica)),
+                new KeyFrame(Duration.seconds(0.7), e -> animarNodo(hboxSFX)),
+                new KeyFrame(Duration.seconds(0.85), e -> animarNodo(hboxBrillo)),
+                new KeyFrame(Duration.seconds(1.0), e -> animarNodo(hboxAnimaciones)),
+                new KeyFrame(Duration.seconds(1.15), e -> animarNodo(hboxBotones))
+            );
+        } else {
+            showOptionsControls();
+        }
+
+        try {
+            URL videoResource = getClass().getResource("/imagenes/pergaminoVideo.mp4");
+            if(videoResource == null) {
+                showStaticBackground();
+                return;
+            }
+
+            Media media = new Media(videoResource.toExternalForm());
+            MediaPlayer player = new MediaPlayer(media);
+            mediaPlayer = player;
+            fondoPergamino.setMediaPlayer(player);
+            media.setOnError(() -> {
+                if(mediaPlayer == player) {
+                    showStaticBackground();
+                }
+            });
+            player.setOnError(() -> {
+                if(mediaPlayer == player) {
+                    showStaticBackground();
+                }
+            });
+            fondoPergamino.setOnError(event -> {
+                if(mediaPlayer == player) {
+                    showStaticBackground();
+                }
+            });
+            player.setOnReady(() -> {
+                if(mediaPlayer != player || !AnimationManager.getInstance().areAnimationsEnabled()) {
+                    return;
+                }
+                imagenFondo.setVisible(false);
+                fondoPergamino.setVisible(true);
+                player.play();
+                if(animateControls && optionsTimeline != null) {
+                    optionsTimeline.playFromStart();
+                }
+            });
+
+            if(media.getError() != null || player.getError() != null) {
+                showStaticBackground();
+            }
+        } catch(Exception e) {
+            showStaticBackground();
+        }
+    }
+
+    private void showStaticBackground() {
+        stopOptionsTimeline();
+        disposeMediaPlayer();
+        imagenFondo.setVisible(true);
+        fondoPergamino.setVisible(false);
+        showOptionsControls();
+    }
+
+    private void hideOptionsControls() {
+        labelOptions.setOpacity(1);
+        hboxMusica.setOpacity(1);
+        hboxSFX.setOpacity(1);
+        hboxBrillo.setOpacity(1);
+        hboxAnimaciones.setOpacity(1);
+        hboxBotones.setOpacity(1);
+        labelOptions.setVisible(false);
+        hboxMusica.setVisible(false);
+        hboxSFX.setVisible(false);
+        hboxBrillo.setVisible(false);
+        hboxAnimaciones.setVisible(false);
+        hboxBotones.setVisible(false);
+    }
+
+    private void showOptionsControls() {
+        labelOptions.setVisible(true);
+        hboxMusica.setVisible(true);
+        hboxSFX.setVisible(true);
+        hboxBrillo.setVisible(true);
+        hboxAnimaciones.setVisible(true);
+        hboxBotones.setVisible(true);
+        labelOptions.setOpacity(1);
+        hboxMusica.setOpacity(1);
+        hboxSFX.setOpacity(1);
+        hboxBrillo.setOpacity(1);
+        hboxAnimaciones.setOpacity(1);
+        hboxBotones.setOpacity(1);
+    }
+
+    private void stopOptionsTimeline() {
+        if(optionsTimeline != null) {
+            optionsTimeline.stop();
+            optionsTimeline = null;
+        }
+    }
+
+    private void disposeMediaPlayer() {
+        fondoPergamino.setMediaPlayer(null);
+        fondoPergamino.setOnError(null);
+        fondoPergamino.setVisible(false);
+        if(mediaPlayer != null) {
+            mediaPlayer.setOnReady(null);
+            mediaPlayer.setOnError(null);
+            mediaPlayer.stop();
+            mediaPlayer.dispose();
+            mediaPlayer = null;
+        }
+    }
     
      @FXML
     private void cerrarStage() {
+        disposeMediaPlayer();
+        stopOptionsTimeline();
         stage = (Stage) cerrar.getScene().getWindow();
         stage.close();
     }
@@ -179,19 +267,6 @@ public class OptionsController implements Initializable{
     private void minimizarStage() {
         stage = (Stage) minimizar.getScene().getWindow();
         stage.setIconified(true);
-    }
-    
-    private void restart() {
-        try {
-            Stage stage = (Stage) mainAnchor.getScene().getWindow();
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("options.fxml"));
-            Parent root = loader.load();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
     
     @FXML
