@@ -2,7 +2,7 @@
   <img src="akinatorIcono.png" alt="Logo de Akinator" width="170">
 </p>
 
-# Akinator – UEES Edition
+# Akinator – Java Edition
 
 Piensa en un actor y deja que Akinator intente adivinarlo con preguntas de sí o no.
 
