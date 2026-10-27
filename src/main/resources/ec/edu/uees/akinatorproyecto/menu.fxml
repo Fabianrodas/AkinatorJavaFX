@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
@@ -22,21 +23,12 @@
             <Font name="Minangkabau" size="96.0" />
          </font>
       </Label>
-      <ImageView fx:id="akinatorMenu" fitHeight="364.0" fitWidth="371.0" layoutX="40.0" layoutY="206.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="akinatorMenu" fitHeight="364.0" fitWidth="371.0" layoutX="42.0" layoutY="189.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../../../imagenes/akinator_menu.png" />
          </image>
       </ImageView>
-      <Button fx:id="botonPlay" layoutX="132.0" layoutY="500.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#switchToSecondary" prefHeight="62.0" prefWidth="183.0" text="Jugar">
-         <font>
-            <Font name="MrsEavesBold" size="28.0" />
-         </font></Button>
-      <Button fx:id="botonOptions" layoutX="132.0" layoutY="570.0" mnemonicParsing="false" onAction="#switchToOptions" prefHeight="62.0" prefWidth="183.0" text="Opciones">
-         <font>
-            <Font name="MrsEavesBold" size="28.0" />
-         </font>
-      </Button>
-      <Label fx:id="txtUEES" layoutX="167.0" layoutY="165.0" text="UEES Edition">
+      <Label fx:id="txtUEES" layoutX="175.0" layoutY="165.0" text="Java Edition">
          <font>
             <Font name="MrsEavesRoman" size="22.0" />
          </font>
@@ -60,5 +52,24 @@
             </HBox>
          </children>
       </StackPane>
+      <VBox fx:id="vboxBotonesMenu" alignment="CENTER" layoutX="147.0" layoutY="463.0" prefHeight="182.0" prefWidth="160.0" spacing="10.0">
+         <children>
+            <Button fx:id="botonPlay" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#switchToSecondary" prefHeight="50.0" prefWidth="150.0" text="Jugar">
+               <font>
+                  <Font name="MrsEavesBold" size="28.0" />
+               </font>
+            </Button>
+            <Button fx:id="botonOptions" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#switchToOptions" prefHeight="50.0" prefWidth="150.0" text="Opciones">
+               <font>
+                  <Font name="MrsEavesBold" size="28.0" />
+               </font>
+            </Button>
+            <Button fx:id="botonCreditos" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" text="Creditos">
+               <font>
+                  <Font name="MrsEavesBold" size="28.0" />
+               </font>
+            </Button>
+         </children>
+      </VBox>
    </children>
 </AnchorPane>

@@ -37,9 +37,9 @@
     -fx-font-size: 27px;
 }
 
-#botonPlay, #botonOptions {
+#botonPlay, #botonOptions, #botonCreditos {
     -fx-font-family: "MrsEavesBold" Arial;
-    -fx-font-size: 28px;
+    -fx-font-size: 24px;
     -fx-text-fill: black;
     -fx-background-color: linear-gradient(#FFD700, #FFA500);
     -fx-border-color: #894601;
@@ -173,7 +173,7 @@
     -fx-font-size: 20px;
 }
 
-#botonPlay:hover, #botonOptions:hover, #botonSi:hover, #botonNo:hover, 
+#botonPlay:hover, #botonOptions:hover, #botonCreditos:hover, #botonSi:hover, #botonNo:hover, 
 #btnRegresar:hover, #btnReset:hover, #btnSiResultado:hover, #btnNoResultado:hover, #btnHome:hover, #btnAlerta:hover {
     -fx-background-color: linear-gradient(#603813, #B29F94);
     -fx-text-fill: white;
