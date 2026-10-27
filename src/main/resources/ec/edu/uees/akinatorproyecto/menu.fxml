@@ -64,7 +64,7 @@
                   <Font name="MrsEavesBold" size="28.0" />
                </font>
             </Button>
-            <Button fx:id="botonCreditos" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="50.0" prefWidth="150.0" text="Creditos">
+            <Button fx:id="botonCreditos" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#switchToCredits" prefHeight="50.0" prefWidth="150.0" text="Créditos">
                <font>
                   <Font name="MrsEavesBold" size="28.0" />
                </font>

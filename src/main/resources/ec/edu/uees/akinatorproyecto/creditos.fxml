@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.shape.SVGPath?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane fx:id="mainAnchor" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="715.0" prefWidth="450.0" stylesheets="@../../../../css/estilos.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ec.edu.uees.akinatorproyecto.CreditosController">
+   <children>
+      <ImageView fitHeight="715.0" fitWidth="450.0" mouseTransparent="true" pickOnBounds="true">
+         <image>
+            <Image url="@../../../../imagenes/fondoMain.png" />
+         </image>
+      </ImageView>
+      <StackPane layoutX="-16.0" layoutY="-8.0" prefHeight="40.0" prefWidth="485.0">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#cc6d6d" height="40.0" opacity="0.38" stroke="BLACK" strokeType="INSIDE" translateX="-5.0" width="460.0" />
+            <HBox alignment="TOP_RIGHT" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="450.0">
+               <children>
+                  <Button fx:id="minimizar" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#minimizarStage" prefHeight="63.0" prefWidth="70.0" text="-" translateY="-30.0">
+                     <font>
+                        <Font size="40.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="cerrar" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#cerrarStage" prefHeight="33.0" prefWidth="70.0" text="❌">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </StackPane>
+
+      <Label fx:id="creditTitle" alignment="CENTER" layoutX="45.0" layoutY="64.0" prefHeight="65.0" prefWidth="360.0" text="Créditos">
+         <font><Font name="Minangkabau" size="60.0" /></font>
+      </Label>
+
+      <StackPane layoutX="43.0" layoutY="146.0" prefHeight="145.0" prefWidth="364.0" styleClass="credit-card">
+         <padding><Insets bottom="12.0" left="16.0" right="16.0" top="12.0" /></padding>
+         <children>
+            <HBox alignment="CENTER_LEFT" spacing="16.0">
+               <children>
+                  <StackPane prefHeight="94.0" prefWidth="94.0">
+                     <children>
+                        <Circle fill="#f5d7a4" radius="45.0" stroke="#8b542a" strokeWidth="3.0" />
+                        <Label fx:id="inicialesFabian" styleClass="avatar-fallback" text="FR">
+                           <font><Font name="MrsEavesBold" size="28.0" /></font>
+                        </Label>
+                        <ImageView fx:id="imagenFabian" fitHeight="86.0" fitWidth="86.0" pickOnBounds="true" preserveRatio="false" accessibleText="Foto de perfil de Fabián Rodas en GitHub" visible="false" />
+                     </children>
+                  </StackPane>
+                  <VBox alignment="CENTER_LEFT" prefHeight="110.0" prefWidth="218.0" spacing="8.0">
+                     <children>
+                        <Label styleClass="credit-name" text="Fabián Rodas" />
+                        <HBox alignment="CENTER_LEFT" spacing="12.0">
+                           <children>
+                              <Button accessibleText="Abrir GitHub de Fabián Rodas" onAction="#abrirGithubFabian" styleClass="github-button" text="GitHub">
+                                 <graphic>
+                                    <HBox alignment="CENTER" spacing="7.0">
+                                       <children>
+                                          <SVGPath content="M12 .297a12 12 0 0 0-3.79 23.4c.6.111.82-.261.82-.577 0-.285-.011-1.04-.016-2.04-3.338.726-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.09-.745.083-.73.083-.73 1.205.085 1.84 1.236 1.84 1.236 1.07 1.835 2.81 1.305 3.495.998.107-.776.418-1.305.762-1.605-2.665-.304-5.466-1.333-5.466-5.931 0-1.31.468-2.381 1.235-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.323 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.553 3.297-1.23 3.297-1.23.653 1.653.242 2.873.119 3.176.77.84 1.233 1.911 1.233 3.221 0 4.61-2.805 5.623-5.475 5.921.43.371.823 1.102.823 2.222 0 1.606-.015 2.898-.015 3.293 0 .319.216.694.825.576A12 12 0 0 0 12 .297" styleClass="github-mark" />
+                                       </children>
+                                    </HBox>
+                                 </graphic>
+                              </Button>
+                              <Button accessibleText="Abrir LinkedIn de Fabián Rodas" onAction="#abrirLinkedinFabian" styleClass="linkedin-button" text="LinkedIn">
+                                 <graphic><Label styleClass="linkedin-mark" text="in" /></graphic>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </StackPane>
+
+      <StackPane layoutX="43.0" layoutY="305.0" prefHeight="145.0" prefWidth="364.0" styleClass="credit-card">
+         <padding><Insets bottom="12.0" left="16.0" right="16.0" top="12.0" /></padding>
+         <children>
+            <HBox alignment="CENTER_LEFT" spacing="16.0">
+               <children>
+                  <StackPane prefHeight="94.0" prefWidth="94.0">
+                     <children>
+                        <Circle fill="#f5d7a4" radius="45.0" stroke="#8b542a" strokeWidth="3.0" />
+                        <Label fx:id="inicialesPaula" styleClass="avatar-fallback" text="PB">
+                           <font><Font name="MrsEavesBold" size="28.0" /></font>
+                        </Label>
+                        <ImageView fx:id="imagenPaula" fitHeight="86.0" fitWidth="86.0" pickOnBounds="true" preserveRatio="false" accessibleText="Foto de perfil de Paula Benalcázar en GitHub" visible="false" />
+                     </children>
+                  </StackPane>
+                  <VBox alignment="CENTER_LEFT" prefHeight="110.0" prefWidth="218.0" spacing="8.0">
+                     <children>
+                        <Label styleClass="credit-name" text="Paula Benalcázar" />
+                        <HBox alignment="CENTER_LEFT" spacing="12.0">
+                           <children>
+                              <Button accessibleText="Abrir GitHub de Paula Benalcázar" onAction="#abrirGithubPaula" styleClass="github-button" text="GitHub">
+                                 <graphic>
+                                    <HBox alignment="CENTER" spacing="7.0">
+                                       <children>
+                                          <SVGPath content="M12 .297a12 12 0 0 0-3.79 23.4c.6.111.82-.261.82-.577 0-.285-.011-1.04-.016-2.04-3.338.726-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.09-.745.083-.73.083-.73 1.205.085 1.84 1.236 1.84 1.236 1.07 1.835 2.81 1.305 3.495.998.107-.776.418-1.305.762-1.605-2.665-.304-5.466-1.333-5.466-5.931 0-1.31.468-2.381 1.235-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.323 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.553 3.297-1.23 3.297-1.23.653 1.653.242 2.873.119 3.176.77.84 1.233 1.911 1.233 3.221 0 4.61-2.805 5.623-5.475 5.921.43.371.823 1.102.823 2.222 0 1.606-.015 2.898-.015 3.293 0 .319.216.694.825.576A12 12 0 0 0 12 .297" styleClass="github-mark" />
+                                       </children>
+                                    </HBox>
+                                 </graphic>
+                              </Button>
+                              <Button accessibleText="Abrir LinkedIn de Paula Benalcázar" onAction="#abrirLinkedinPaula" styleClass="linkedin-button" text="LinkedIn">
+                                 <graphic><Label styleClass="linkedin-mark" text="in" /></graphic>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </StackPane>
+
+      <Button fx:id="btnRepositorio" accessibleText="Abrir repositorio del proyecto en GitHub" layoutX="106.0" layoutY="485.0" mnemonicParsing="false" onAction="#abrirRepositorio" prefHeight="50.0" prefWidth="238.0" text="Repositorio del proyecto" />
+
+      <Button fx:id="btnRegresar" layoutX="147.0" layoutY="566.0" mnemonicParsing="false" onAction="#volverAlMenu" prefHeight="54.0" prefWidth="156.0" text="Regresar" />
+   </children>
+</AnchorPane>

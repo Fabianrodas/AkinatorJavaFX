@@ -34,6 +34,7 @@ La respuesta **Sí** lleva a «Actor A» y **No** lleva a «Actor B». Es import
 - Animaciones activables y opción para fijar la ventana.
 - Restablecimiento de las opciones y expresiones de Akinator durante la partida.
 - Foto del actor obtenida desde Wikipedia. Requiere conexión a internet; si no hay conexión, se muestra la imagen de respaldo.
+- Pantalla de créditos con las fotos de perfil de GitHub, enlaces a GitHub y LinkedIn de los autores y acceso al repositorio. Las fotos requieren conexión; si no cargan, se muestran las iniciales.
 
 ## Capturas
 
@@ -76,6 +77,13 @@ java -jar target/AkinatorProyecto-1.0.0.jar
 ```
 
 Ejecuta el segundo comando desde la carpeta raíz del proyecto, donde está `arbolActores.txt`. Maven coloca las librerías de JavaFX en `target/lib/`, junto al JAR. Para distribuir el juego, conserva la carpeta `lib/` junto al JAR y coloca `arbolActores.txt` en la carpeta desde la que se inicia el programa.
+
+## Limitaciones conocidas
+
+- El JAR necesita ejecutarse desde la carpeta que contiene `arbolActores.txt`; el ZIP de distribución incluye ese archivo junto al JAR.
+- La pantalla para enseñar un personaje nuevo todavía no tiene un botón para volver al menú.
+- El formato del contador de preguntas no es consistente: algunos textos muestran, por ejemplo, `Pregunta N° 1` y otros `Pregunta N°3`.
+- Las fotos del actor desde Wikipedia y las fotos de perfil de GitHub requieren conexión a internet. La pantalla de créditos muestra iniciales si los perfiles no están disponibles.
 
 ## Estructura del proyecto
 

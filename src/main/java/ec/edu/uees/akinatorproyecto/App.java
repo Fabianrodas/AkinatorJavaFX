@@ -3,6 +3,7 @@ package ec.edu.uees.akinatorproyecto;
 import ec.edu.uees.opciones.AnimationManager;
 import ec.edu.uees.opciones.MusicPlayer;
 import javafx.application.Application;
+import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -20,11 +21,13 @@ public class App extends Application {
 
     private static Scene scene;
     private static Stage primaryStage;
+    private static HostServices hostServices;
 
     @Override
     public void start(Stage stage) throws IOException {
         new Thread(() -> MusicPlayer.startMusic()).start();
         primaryStage = stage;
+        hostServices = getHostServices();
         scene = new Scene(loadFXML("menu"));
         scene.getStylesheets().add(getClass().getResource("/css/estilos.css").toExternalForm());
         Image icon = new Image(getClass().getResourceAsStream("/imagenes/akinatorIcono.png"));
@@ -66,6 +69,13 @@ public class App extends Application {
         scene = newScene;
         primaryStage.setScene(newScene);
         primaryStage.show();
+    }
+
+    static void openExternalUrl(String url) {
+        if (hostServices == null) {
+            throw new IllegalStateException("HostServices todavía no está disponible.");
+        }
+        hostServices.showDocument(url);
     }
 
     private static Parent loadFXML(String fxml) throws IOException {

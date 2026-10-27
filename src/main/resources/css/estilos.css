@@ -14,14 +14,16 @@
     -fx-background-position: center center;
 }
 
-#tituloAkinator {
+#tituloAkinator, #creditTitle {
     -fx-font-family: "Minangkabau", Arial;
-    -fx-font-size: 85px;
     -fx-text-fill: linear-gradient(#fee69d, #ffa303);
     -fx-effect: dropshadow(gaussian, #8B0000, 5, 0.8, 3, 3);
     -fx-stroke: #8B0000;
-    -fx-stroke-width: 2px; 
+    -fx-stroke-width: 2px;
 } 
+
+#tituloAkinator { -fx-font-size: 85px; }
+#creditTitle { -fx-font-size: 60px; }
 
 #btnRegresarJuego {
     -fx-font-family: "Minangkabau", Arial;
@@ -50,7 +52,85 @@
     -fx-effect: innershadow(gaussian, #FFFFFF80, 10, 0.5, 0, -2);
 }
 
-#btnRegresar, #btnReset, #btnSiResultado, #btnNoResultado, #btnHome, #btnAlerta {
+.credit-card {
+    -fx-background-color: linear-gradient(to bottom right, #fff0c2, #f2bd57);
+    -fx-background-radius: 14px;
+    -fx-border-color: #8b542a;
+    -fx-border-radius: 14px;
+    -fx-border-width: 2px;
+    -fx-effect: dropshadow(gaussian, rgba(68, 35, 8, 0.35), 7, 0.25, 0, 3);
+}
+
+.credit-name {
+    -fx-font-family: "MrsEavesBold", Arial;
+    -fx-font-size: 25px;
+    -fx-text-fill: #281508;
+}
+
+.avatar-fallback {
+    -fx-text-fill: #5a3014;
+    -fx-alignment: center;
+}
+
+.github-button, .linkedin-button {
+    -fx-font-family: Arial;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-padding: 7px 8px;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
+    -fx-border-width: 1px;
+    -fx-pref-height: 40px;
+    -fx-cursor: hand;
+}
+
+.github-button {
+    -fx-pref-width: 98px;
+    -fx-background-color: #24292f;
+    -fx-border-color: #171a1e;
+}
+
+.linkedin-button {
+    -fx-pref-width: 105px;
+    -fx-background-color: #0a66c2;
+    -fx-border-color: #084f96;
+}
+
+.github-button:hover { -fx-background-color: #3b4045; }
+.linkedin-button:hover { -fx-background-color: #004182; }
+
+.github-mark {
+    -fx-fill: white;
+}
+
+.linkedin-mark {
+    -fx-font-family: Arial;
+    -fx-font-size: 19px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+#btnRepositorio {
+    -fx-font-family: "MrsEavesBold", Arial;
+    -fx-font-size: 20px;
+    -fx-text-fill: black;
+    -fx-background-color: linear-gradient(#FFD700, #FFA500);
+    -fx-border-color: #894601;
+    -fx-border-width: 3px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-background-insets: 0, 1, 2;
+    -fx-effect: innershadow(gaussian, #FFFFFF80, 10, 0.5, 0, -2);
+}
+
+.github-button:focused, .linkedin-button:focused, #btnRepositorio:focused {
+    -fx-border-color: white;
+    -fx-border-width: 2px;
+    -fx-border-radius: 9px;
+}
+
+#btnRegresar, #btnReset, #btnSiResultado, #btnNoResultado, #btnHome, #btnAlerta, #btnRepositorio {
     -fx-font-family: "MrsEavesBold" Arial;
     -fx-font-size: 20px;
     -fx-text-fill: black;
@@ -174,7 +254,7 @@
 }
 
 #botonPlay:hover, #botonOptions:hover, #botonCreditos:hover, #botonSi:hover, #botonNo:hover, 
-#btnRegresar:hover, #btnReset:hover, #btnSiResultado:hover, #btnNoResultado:hover, #btnHome:hover, #btnAlerta:hover {
+#btnRegresar:hover, #btnReset:hover, #btnSiResultado:hover, #btnNoResultado:hover, #btnHome:hover, #btnAlerta:hover, #btnRepositorio:hover {
     -fx-background-color: linear-gradient(#603813, #B29F94);
     -fx-text-fill: white;
 }

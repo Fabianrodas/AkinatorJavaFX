@@ -29,7 +29,7 @@ public class MenuController implements Initializable {
     private Stage stage;
     private double xOffset = 0;
     private double yOffset = 0;
-    @FXML private Button minimizar, cerrar, botonPlay, botonOptions;
+    @FXML private Button minimizar, cerrar, botonPlay, botonOptions, botonCreditos;
     @FXML private ImageView akinatorMenu;
     @FXML private Label tituloAkinator;
     
@@ -41,6 +41,11 @@ public class MenuController implements Initializable {
     @FXML
     private void switchToOptions() throws IOException {
         App.setRootSinAnimar("options");
+    }
+
+    @FXML
+    private void switchToCredits() throws IOException {
+        App.setRoot("creditos");
     }
 
     @Override
