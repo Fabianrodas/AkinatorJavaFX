@@ -285,12 +285,17 @@ public class FinalController implements Initializable{
             app.abrirAlerta();
             return;
         }
+        if (textfield1.isVisible() && textfield1.getText().trim().startsWith("¿")) {
+            AlertaSingleton.getInstance().setAlerta("El nombre del personaje no puede comenzar con (¿).");
+            app.abrirAlerta();
+            return;
+        }
         if (textfield1.isVisible() && arbol.existeEnArbol(textfield1.getText())) { // Si el personaje ya existe
             AlertaSingleton.getInstance().setAlerta("Este personaje ya existe en el juego.");
             app.abrirAlerta();
             return;
         }
-        if (textfield2.isVisible() && !textfield2.getText().startsWith("¿") && !textfield2.getText().endsWith("?")) {
+        if (textfield2.isVisible() && (!textfield2.getText().startsWith("¿") || !textfield2.getText().endsWith("?"))) {
             // Si no tiene formato de pregunta
             AlertaSingleton.getInstance().setAlerta("La pregunta debe incluir (¿) al inicio y (?) al final.");
             app.abrirAlerta();
